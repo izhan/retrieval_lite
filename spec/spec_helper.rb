@@ -1,4 +1,4 @@
-require "retrieval_light"
+require "retrieval_lite"
 require "support/spec_helpers/file_helpers"
 
 RSpec.configure do |config|
