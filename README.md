@@ -1,4 +1,4 @@
-# Retrieval Light Gem
+# Retrieval Lite Gem
 
 Lightweight gem for document retrieval using tf-idf based algorithms for Ruby on Rails applications
 
@@ -6,7 +6,7 @@ Lightweight gem for document retrieval using tf-idf based algorithms for Ruby on
 
 Add this line to your application's Gemfile:
 
-    gem '.'
+    gem 'retrieval_lite'
 
 And then execute:
 
@@ -14,7 +14,7 @@ And then execute:
 
 Or install it yourself as:
 
-    $ gem install .
+    $ gem install retrieval_lite
 
 ## Usage
 
