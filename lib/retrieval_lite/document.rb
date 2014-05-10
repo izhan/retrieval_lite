@@ -13,8 +13,8 @@ class RetrievalLite::Document
   # @option opts [String] :id the id of the document.  Defaults to object_id assigned by ruby
   def initialize(content, opts = {})
     @content = content
-    @tokens = Hash.new(0) # initialize to zero
     @id = opts[:id] || object_id
+    @tokens = Hash.new(0) # initialize to zero
 
     token_text = content.strip.split(/\s+/)
 
