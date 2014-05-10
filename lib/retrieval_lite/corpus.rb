@@ -1,7 +1,7 @@
 class RetrievalLite::Corpus
   attr_accessor :documents
 
-  # @param document [Array<Document>] the document to be added
+  # @param documents [Array<Document>] the documents of the corpus
   # @param opts [Hash] optional arguments
   def initialize(documents = [], opts = {})
     @documents = documents
