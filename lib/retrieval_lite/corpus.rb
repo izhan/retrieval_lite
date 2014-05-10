@@ -2,7 +2,8 @@ class RetrievalLite::Corpus
   attr_accessor :documents
 
   # @param documents [Array<Document>] the documents of the corpus
-  # @param opts [Hash] optional arguments
+  # @param opts [Hash] optional arguments to initializer
+  # @option opts [Array<String>] :stop_words the words to ignore when creating tokens
   def initialize(documents = [], opts = {})
     @documents = documents
   end
