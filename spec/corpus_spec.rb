@@ -4,7 +4,7 @@ describe RetrievalLite::Corpus do
   let (:document) do
     RetrievalLite::Document.new("lorem ipsum dolor sit amet")
   end
-  let (:document_replica) do
+  let (:document_replicated) do
     RetrievalLite::Document.new("lorem ipsum dolor sit amet")
   end
   let (:document_with_duplicates) do
@@ -63,6 +63,42 @@ describe RetrievalLite::Corpus do
         corpus.documents_with(t).should == [document]
       end
       corpus.documents_with("foo").should == nil
+    end
+  end
+
+  describe "for two-identical-document corpus" do
+    let (:corpus) do
+      RetrievalLite::Corpus.new([document, document_replicated])
+    end
+    it "should give us correct document frequencies" do
+      terms = ["lorem", "ipsum", "dolor", "sit", "amet"]
+      terms.each do |t|
+        corpus.document_frequency(t).should == 2
+      end
+      corpus.document_frequency("foo").should == 0
+    end
+    it "should return document when queried" do
+      terms = ["lorem", "ipsum", "dolor", "sit", "amet"]
+      terms.each do |t|
+        corpus.documents_with(t).should == [document, document_replicated]
+      end
+      corpus.documents_with("foo").should == nil
+    end
+  end
+
+  describe "for multiple-document corpus" do
+    let (:corpus) do
+      RetrievalLite::Corpus.new([document, document_replicated, document_with_duplicates, document_two, document_three, document_paragraph])
+    end
+
+    it "should have the correct size" do
+      corpus.size.should == 6
+    end
+
+    # TODO are more comprehensive tests needed....?
+    it "should give us correct document frequencies" do
+      corpus.document_frequency("lorem").should == 3
+      corpus.document_frequency("semper").should == 1
     end
   end
 

@@ -24,7 +24,7 @@ describe RetrievalLite::Tokenizer do
       end
 
       it "should ignore punctuation" do
-        content = "lorem ! @ # ipsum ( ) dolor sit * \  amet"
+        content = "lorem ! @ #ipsum (dolor) sit * \  amet"
         RetrievalLite::Tokenizer.parse_content(content).should == basic_tf
       end
 
@@ -64,6 +64,13 @@ describe RetrievalLite::Tokenizer do
     end
 
     describe "for special cases" do
+      let(:foo_bar_hash) do
+        {
+          "foo" => 1,
+          "bar" => 1
+        }
+      end
+
       it "should return empty hash if there are no terms" do
         RetrievalLite::Tokenizer.parse_content("").should == Hash.new
       end
@@ -75,6 +82,18 @@ describe RetrievalLite::Tokenizer do
       it "should ignore control characters" do
         RetrievalLite::Tokenizer.parse_content("\a\e\f\n\r\t\v").should == Hash.new
         RetrievalLite::Tokenizer.parse_content("\x07\x1B\f\n\r\t\v").should == Hash.new
+      end
+
+      it "should split words connected by hyphens" do
+        RetrievalLite::Tokenizer.parse_content("foo-bar").should == foo_bar_hash
+      end
+      
+      it "should split words connected by slashes" do
+        RetrievalLite::Tokenizer.parse_content("foo/bar").should == foo_bar_hash
+      end
+
+      it "should split words connected by commas" do
+        RetrievalLite::Tokenizer.parse_content("foo/bar").should == foo_bar_hash
       end
     end
   end
