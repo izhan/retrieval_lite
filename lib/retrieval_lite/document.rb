@@ -1,8 +1,8 @@
 class RetrievalLite::Document
   # the text of the document
   attr_reader :content
-  # the text of the document broken up into IR tokens
-  attr_reader :tokens
+  # a hash of all terms of the documents to the frequency of each term
+  attr_reader :term_frequencies
   # the id of the document
   attr_reader :id
 
@@ -14,24 +14,18 @@ class RetrievalLite::Document
   def initialize(content, opts = {})
     @content = content
     @id = opts[:id] || object_id
-    @tokens = Hash.new(0) # initialize to zero
-
-    token_text = content.strip.split(/\s+/)
-
-    token_text.each do |t|
-      @tokens[t] += 1
-    end
+    @term_frequencies = RetrievalLite::Tokenizer.parse_content(content)
   end
 
   # for debugging
   def print_tokens
-    tokens.each do |key, value|
+    @term_frequencies.each do |key, value|
       puts "#{key}: #{value}"
     end
   end
 
-  # @return [Integer] the number documents in the corpus
-  def token_size
-    tokens.size
+  # @return [Integer] the total number of unique terms in the document
+  def term_count
+    @term_frequencies.size
   end
 end
