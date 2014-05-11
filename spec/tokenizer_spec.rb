@@ -24,7 +24,7 @@ describe RetrievalLite::Tokenizer do
       end
 
       it "should ignore punctuation" do
-        content = "lorem ! @ #ipsum (dolor) sit * \  amet"
+        content = "lorem! @ #ipsum (dolor) sit * \  amet"
         RetrievalLite::Tokenizer.parse_content(content).should == basic_tf
       end
 
@@ -70,6 +70,13 @@ describe RetrievalLite::Tokenizer do
           "bar" => 1
         }
       end
+      let(:foo_bar_baz_hash) do
+        {
+          "foo" => 1,
+          "bar" => 1,
+          "baz" => 1
+        }
+      end
 
       it "should return empty hash if there are no terms" do
         RetrievalLite::Tokenizer.parse_content("").should == Hash.new
@@ -84,16 +91,23 @@ describe RetrievalLite::Tokenizer do
         RetrievalLite::Tokenizer.parse_content("\x07\x1B\f\n\r\t\v").should == Hash.new
       end
 
-      it "should split words connected by hyphens" do
-        RetrievalLite::Tokenizer.parse_content("foo-bar").should == foo_bar_hash
+      it "should split words connected by special characters" do
+        RetrievalLite::Tokenizer.parse_content("foo/bar").should == foo_bar_hash
+        RetrievalLite::Tokenizer.parse_content("foo,bar").should == foo_bar_hash
+        RetrievalLite::Tokenizer.parse_content("foo,:bar").should == foo_bar_hash
+        RetrievalLite::Tokenizer.parse_content("foo   ,:bar").should == foo_bar_hash
+        RetrievalLite::Tokenizer.parse_content("!@foo  ,:bar#").should == foo_bar_hash
+
+        RetrievalLite::Tokenizer.parse_content("foo:bar baz").should == foo_bar_baz_hash
       end
       
-      it "should split words connected by slashes" do
-        RetrievalLite::Tokenizer.parse_content("foo/bar").should == foo_bar_hash
-      end
+      it "should not split words connected by only one hyphen" do
+        RetrievalLite::Tokenizer.parse_content("foo-bar").should == { "foo-bar" => 1 }
+        RetrievalLite::Tokenizer.parse_content("foo - bar").should == foo_bar_hash
+        RetrievalLite::Tokenizer.parse_content("foo --bar").should == foo_bar_hash
+        #RetrievalLite::Tokenizer.parse_content("foo--bar").should == foo_bar_hash # TODO is this worth it?
 
-      it "should split words connected by commas" do
-        RetrievalLite::Tokenizer.parse_content("foo/bar").should == foo_bar_hash
+        RetrievalLite::Tokenizer.parse_content("foo-bar-baz").should_not == foo_bar_baz_hash
       end
     end
   end
