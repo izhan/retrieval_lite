@@ -24,9 +24,32 @@ module RetrievalLite::TfIdfRetrieval
     documents = corpus.documents_with(token_array.first)
   end
 
+  # Ranks a document in corpus using the tf-idf scoring.
+  # 
+  # @note tf-idf is slightly modified.  n_j (# of docs containing term j) is replaced with n_j + 1 to avoid divide by zero
+  # 
+  # @param corpus [Corpus] 
   # @param document [Document] 
   # @param term [String]
-  def self.tfidf_score(document, term)
-    
+  def self.tfidf_weight(corpus, document, term)
+    document.frequency_of(term) * Math.log(corpus.size/(corpus.document_frequency(term)))
+  end
+
+  # Ranks a document in corpus using the normalized tf-idf scoring.
+  # @see #tfidf_weight
+  # @note tf-idf is slightly modified.  n_j (# of docs containing term j) is replaced with n_j + 1 to avoid divide by zero
+  # 
+  # @param corpus [Corpus] 
+  # @param document [Document] 
+  # @param term [String]
+  def self.normalized_tfidf_weight(corpus, document, term)
+    length_of_vector = 0
+
+    documents_with(term).each do |d|
+      weight = tfidf_weight(corpus, d, term)
+      length_of_vector += weight * weight
+    end
+
+    tfidf_weight(corpus, document, term) / Math.sqrt(length_of_vector)
   end
 end
