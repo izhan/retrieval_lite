@@ -67,6 +67,12 @@ describe RetrievalLite::Document do
         document_with_duplicates.term_frequencies.should == multiple_tf
       end
     end
+
+    describe "for blank document" do
+      it "should not raise error on initialization" do
+        expect { RetrievalLite::Document.new("") }.to_not raise_error
+      end
+    end
   end
 
   describe "optional parameters" do

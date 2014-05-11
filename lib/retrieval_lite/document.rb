@@ -28,4 +28,18 @@ class RetrievalLite::Document
   def term_count
     @term_frequencies.size
   end
+
+  # @return [Array<String>] the unique terms of the document
+  def terms
+    @term_frequencies.keys
+  end
+
+  # @return [Integer] the total number of terms (not unique) in the document
+  def total_terms
+    count = 0
+    @term_frequencies.each do |key, value|
+      count += value
+    end
+    return count
+  end
 end
