@@ -27,6 +27,9 @@ describe RetrievalLite::Corpus do
       In aliquet laoreet tortor, at adipiscing diam scelerisque ut."
       )
   end
+  let (:all_documents) do
+    [document, document_replicated, document_with_duplicates, document_two, document_three, document_paragraph]
+  end
 
   describe "for empty corpus" do
     let (:corpus) do
@@ -88,7 +91,7 @@ describe RetrievalLite::Corpus do
 
   describe "for multiple-document corpus" do
     let (:corpus) do
-      RetrievalLite::Corpus.new([document, document_replicated, document_with_duplicates, document_two, document_three, document_paragraph])
+      RetrievalLite::Corpus.new(all_documents)
     end
 
     it "should have the correct size" do
@@ -99,6 +102,22 @@ describe RetrievalLite::Corpus do
     it "should give us correct document frequencies" do
       corpus.document_frequency("lorem").should == 3
       corpus.document_frequency("semper").should == 1
+    end
+  end
+
+  describe "adding in documents one at a time" do
+    let (:correct_corpus) do
+      RetrievalLite::Corpus.new(all_documents)
+    end
+    let (:corpus) do
+      RetrievalLite::Corpus.new
+    end
+
+    it "should be same as initializing corpus with all documents" do
+      all_documents.each do |d|
+        corpus.add(d)
+      end
+      corpus.documents.should == correct_corpus.documents
     end
   end
 
