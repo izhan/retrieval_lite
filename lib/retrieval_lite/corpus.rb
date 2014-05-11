@@ -15,6 +15,8 @@ class RetrievalLite::Corpus
     @stop_words.each do |w|
       w.downcase!
     end
+    @stop_words = Set.new @stop_words # faster .include?
+
     documents.each do |d|
       update_term_occurrences(d)
     end
