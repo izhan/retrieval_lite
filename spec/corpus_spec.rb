@@ -31,7 +31,9 @@ describe RetrievalLite::Corpus do
   describe "with optional parameters" do
     it "should ignore any stopwords (not case sensitive)" do
       stop_words = ["lorem", "IPSum"]
-      corpus = RetrievalLite::Corpus.new([document, document_replica], stop_words: stop_words)
+      corpus = RetrievalLite::Corpus.new([document], stop_words: stop_words)
+      corpus.documents_with("lorem").should == nil
+      corpus.documents_with("ipsum").should == nil
     end
   end
 end

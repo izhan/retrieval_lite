@@ -10,7 +10,11 @@ class RetrievalLite::Corpus
   def initialize(documents = [], opts = {})
     @documents = documents
     @term_occurrences = {}
-
+    @stop_words = opts[:stop_words] || []
+    # stop_words should be lowercased since tokens are in lowercase
+    @stop_words.each do |w|
+      w.downcase!
+    end
     documents.each do |d|
       update_term_occurrences(d)
     end
@@ -46,7 +50,7 @@ class RetrievalLite::Corpus
       document.terms.each do |term|
         if @term_occurrences.has_key?(term)
           @term_occurrences[term] << document
-        else
+        elsif !@stop_words.include?(term)
           @term_occurrences[term] = [document]
         end
       end
