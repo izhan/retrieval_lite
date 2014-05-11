@@ -28,6 +28,44 @@ describe RetrievalLite::Corpus do
       )
   end
 
+  describe "for empty corpus" do
+    let (:corpus) do
+      RetrievalLite::Corpus.new
+    end
+
+    it "should have size of zero" do
+      corpus.size.should == 0
+    end
+    it "should not error when querying terms" do
+      expect { corpus.documents_with("foo") }.to_not raise_error
+      expect { corpus.document_frequency("foo") }.to_not raise_error
+    end
+  end
+
+  describe "for basic one-document corpus" do
+    let (:corpus) do
+      RetrievalLite::Corpus.new([document])
+    end
+
+    it "should have size of one" do
+      corpus.size.should == 1
+    end
+    it "should give us correct document frequencies" do
+      terms = ["lorem", "ipsum", "dolor", "sit", "amet"]
+      terms.each do |t|
+        corpus.document_frequency(t).should == 1
+      end
+      corpus.document_frequency("foo").should == 0
+    end
+    it "should return document when queried" do
+      terms = ["lorem", "ipsum", "dolor", "sit", "amet"]
+      terms.each do |t|
+        corpus.documents_with(t).should == [document]
+      end
+      corpus.documents_with("foo").should == nil
+    end
+  end
+
   describe "with optional parameters" do
     it "should ignore any stopwords (not case sensitive)" do
       stop_words = ["lorem", "IPSum"]

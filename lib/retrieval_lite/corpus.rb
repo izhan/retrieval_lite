@@ -41,7 +41,11 @@ class RetrievalLite::Corpus
   # @param term [String] the query term for the documents
   # @return [Integer] the number of documents that contain the particular term
   def document_frequency(term)
-    term_occurrences[term].size
+    if term_occurrences[term]
+      return term_occurrences[term].size
+    else
+      return 0
+    end
   end
 
   private
