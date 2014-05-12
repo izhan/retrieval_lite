@@ -8,7 +8,7 @@ Gem::Specification.new do |spec|
   spec.version       = RetrievalLite::VERSION
   spec.authors       = ["Irvin Zhan"]
   spec.email         = ["izhan@princeton.edu"]
-  spec.description   = %q{Lightweight gem for document retrieval using tf-idf based algorithms for Ruby on Rails applications}
+  spec.description   = %q{Lightweight gem for document retrieval using tf-idf based algorithms for Ruby}
   spec.summary       = %q{Please see associated GitHub page for usage.}
   spec.homepage      = "https://github.com/izhan/retrieval_lite"
   spec.license       = "MIT"

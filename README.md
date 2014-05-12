@@ -1,6 +1,6 @@
 # Retrieval Lite Gem
 
-Lightweight gem for document retrieval using tf-idf based algorithms for Ruby on Rails applications
+Lightweight gem for document retrieval using tf-idf based algorithms for Ruby
 
 ## Installation
 
