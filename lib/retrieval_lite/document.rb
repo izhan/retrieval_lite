@@ -1,7 +1,7 @@
 class RetrievalLite::Document
   # the text of the document
   attr_reader :content
-  # a hash of all terms of the documents to the frequency of each term
+  # a Hash<String, Integer> of all terms of the documents to the frequency of each term
   attr_reader :term_frequencies
   # the id of the document
   attr_reader :id

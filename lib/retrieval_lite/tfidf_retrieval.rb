@@ -7,11 +7,23 @@ module RetrievalLite::TfIdfRetrieval
   # @param query [String] the boolean query to be evaluated
   # @return [Array<Document>] ordered array of documents that satisfy the query
   def self.evaluate(corpus, query)
-    token_array = RetrievalLite::Tokenizer.parse_content(query)
-    query_vector = RetrievalLite::Document.new(token_array)
-    num_of_terms = query_vector.size
+    evaluate_with_scores(corpus, query).keys
+  end
 
-    documents = Set.new
+  # Queries a corpus using the tf-idf ranking algorithm and cosine similarity.
+  # Same as #evaluate but returns a hash whose keys are documents and values
+  # are the tf-idf score.
+  # 
+  # @param corpus [Corpus] the collection of documents
+  # @param query [String] the boolean query to be evaluated
+  # @return [Hash<Document, Integer>] ordered array of documents that satisfy the query
+  def self.evaluate_with_scores(corpus, query)
+    token_array = RetrievalLite::Tokenizer.parse_content(query)
+    query_document = RetrievalLite::Document.new(token_array)
+    terms = query_document.term_frequencies.keys
+    query_vector = query_document.term_frequencies.to_a # should be in same order as keys
+
+    documents = Set.new # ordering of documents doesn't matter right now
     # gathering only the documents that contain at least one of those terms
     token_array.each do |t|
       docs_with_term = documents_with(t)
@@ -23,23 +35,15 @@ module RetrievalLite::TfIdfRetrieval
     end
 
     scores = {}
-    documents.each do
-
+    documents.each do |document|
+      document_vector = Array.new(terms.size)
+      terms.each_with_index do |term, index|
+        document_vector[index] = tfidf_weight(corpus, document, term)
+      end
+      scores[d] = RetrievalLite::Vector.cosine_similarity(query_vector, document_vector)
     end
-    corpus.documents_with(token_array.first)
-  end
 
-  # Queries a corpus using the tf-idf ranking algorithm and cosine similarity.
-  # Same as #evaluate but returns a hash whose keys are documents and values
-  # are the tf-idf score.
-  # 
-  # @param corpus [Corpus] the collection of documents
-  # @param query [String] the boolean query to be evaluated
-  # @return [Array<Document>] ordered array of documents that satisfy the query
-  def self.evaluate_with_scores(corpus, query)
-    token_array = RetrievalLite::Tokenizer.parse_content(query)
-
-    documents = corpus.documents_with(token_array.first)
+    return scores
   end
 
   # Ranks a document in corpus using the tf-idf scoring.

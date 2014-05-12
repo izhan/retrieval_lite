@@ -68,6 +68,18 @@ describe RetrievalLite::Document do
       end
     end
 
+
+    describe "frequencies of a term" do
+      it "should be correct for term in document" do
+        document.frequency_of("lorem").should == 1
+        document_with_duplicates.frequency_of("ipsum").should == 2
+      end
+      it "should be zero for term not in document" do
+        document.frequency_of("foo").should == 0
+        document_with_duplicates.frequency_of("foo").should == 0
+      end
+    end
+
     describe "for blank document" do
       it "should not raise error on initialization" do
         expect { RetrievalLite::Document.new("") }.to_not raise_error

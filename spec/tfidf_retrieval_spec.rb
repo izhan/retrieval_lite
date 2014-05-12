@@ -1,6 +1,9 @@
 require 'spec_helper'
 
 describe RetrievalLite::TfIdfRetrieval do
+  let (:document_one_term) do
+    RetrievalLite::Document.new("lorem")
+  end
   let (:document) do
     RetrievalLite::Document.new("lorem ipsum dolor sit amet")
   end
@@ -10,12 +13,10 @@ describe RetrievalLite::TfIdfRetrieval do
   let (:document_doubled) do
     RetrievalLite::Document.new("lorem ipsum dolor sit amet lorem ipsum dolor sit amet")
   end
-  let (:document_one_term) do
-    RetrievalLite::Document.new("lorem")
-  end
   let (:document_both_terms) do
     RetrievalLite::Document.new("lorem ipsum")
   end
+  # sorted by lorem order
   let (:all_documents) do
     [document, document_with_duplicates, document_doubled, document_one_term, document_both_terms]
   end
@@ -32,9 +33,11 @@ describe RetrievalLite::TfIdfRetrieval do
   end
   describe "unnormalized dot product" do
     it "should order documents correctly" do
+
       #TODO
     end
     it "should have the correct scores" do
+
     end
   end
 end
