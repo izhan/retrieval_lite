@@ -8,19 +8,23 @@ module RetrievalLite::BooleanRetrieval
   # @param query [String] the boolean query to be evaluated
   # @return [Array<Document>] unordered array of documents that satisfy the query
   def self.evaluate(corpus, query)
-    if !is_valid?(query)
-      raise "Boolean expression is not valid." # TODO better validation message?
+    if !is_valid_expression?(query)
+      raise "Boolean expression can only consist of boolean operators and alphanumeric characters."
     end
 
     corpus.documents_with(query)
   end
 
-  def self.is_boolean_expression(query)
+  # @param query [String] the boolean query to be evaluated
+  # @return [Boolean] whether query contains any boolean operators
+  def self.has_boolean_operators?(query)
     /AND|OR|NOT/ === query
   end
 
-  private
-    def self.is_valid?(query)
-      true
-    end
+
+  # @param query [String] the boolean query to be evaluated
+  # @return [Boolean] whether query contains any non-alphanumeric characters besides parenthesis and whitespace
+  def self.is_valid_expression?(query)
+    !(/(AND|OR|NOT)\s*\)/ === query)
+  end
 end

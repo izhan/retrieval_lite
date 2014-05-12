@@ -34,15 +34,35 @@ describe RetrievalLite::BooleanRetrieval do
     RetrievalLite::Corpus.new(all_documents)
   end
 
-  describe "is boolean expression" do
+  describe "#has_boolean_operators?" do
     it "should accept any uses of AND OR NOT" do
-      RetrievalLite::BooleanRetrieval.is_boolean_expression("foo AND bar").should == true
-      RetrievalLite::BooleanRetrieval.is_boolean_expression("foo OR bar").should == true
-      RetrievalLite::BooleanRetrieval.is_boolean_expression("foo NOT bar").should == true
+      RetrievalLite::BooleanRetrieval.has_boolean_operators?("foo AND bar").should == true
+      RetrievalLite::BooleanRetrieval.has_boolean_operators?("foo OR bar").should == true
+      RetrievalLite::BooleanRetrieval.has_boolean_operators?("foo NOT bar").should == true
     end
     it "should reject any regular non-boolean queries" do
-      RetrievalLite::BooleanRetrieval.is_boolean_expression("foo bar").should == false
+      RetrievalLite::BooleanRetrieval.has_boolean_operators?("foo bar").should == false
     end
+  end
+
+  describe "#is_valid_expression?" do
+    it "should accept parenthesis and spaces, as well as all alphanumeric characters" do
+      RetrievalLite::BooleanRetrieval.is_valid_expression?("(foo AND bar) OR baz").should == true
+    end
+    it "should reject when there is a close parethensis but no term after AND/OR/NOT" do
+      RetrievalLite::BooleanRetrieval.is_valid_expression?("(foo AND bar AND)").should == false
+      RetrievalLite::BooleanRetrieval.is_valid_expression?("(foo AND bar AND )").should == false
+    end
+    it "should accept AND/OR/NOT with any begin parenthesis after it, regardless if there's a whitespace" do
+      RetrievalLite::BooleanRetrieval.is_valid_expression?("NOT(foo AND bar)").should == true
+      RetrievalLite::BooleanRetrieval.is_valid_expression?("NOT (foo AND bar)").should == true
+    end
+    it "should accept sentences" do
+      RetrievalLite::BooleanRetrieval.is_valid_expression?("foo bar.").should == true
+    end
+  end
+
+  describe "invalid boolean" do
   end
 
   describe "one-term retrieval" do
