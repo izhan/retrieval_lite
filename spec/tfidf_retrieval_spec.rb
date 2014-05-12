@@ -1,6 +1,9 @@
 require 'spec_helper'
 
 describe RetrievalLite::TfIdfRetrieval do
+  let (:document_no_match) do
+    RetrievalLite::Document.new("no-match")
+  end
   let (:document_one_term) do
     RetrievalLite::Document.new("lorem")
   end
@@ -28,6 +31,9 @@ describe RetrievalLite::TfIdfRetrieval do
   end
   let (:corpus_different) do
     RetrievalLite::Corpus.new([document_one_term, document, document_with_duplicates])
+  end
+  let(:corpus_small) do
+    RetrievalLite::Corpus.new([document_one_term, document, document_no_match])
   end
 
   describe "calculating tf-idf scores" do
@@ -84,9 +90,9 @@ describe RetrievalLite::TfIdfRetrieval do
       it "should return the correct score" do
         scores = RetrievalLite::TfIdfRetrieval.evaluate_with_scores(corpus, "ipsum")
         scores.size.should == 4
-        scores[document].should be_within(0.001).of(1.0)
-        scores[document_with_duplicates].should be_within(0.001).of(1.0)
-        scores[document_doubled].should be_within(0.001).of(1.0)
+        scores[document].should be_within(0.001).of(0.320)
+        scores[document_with_duplicates].should be_within(0.001).of(0.163)
+        scores[document_doubled].should be_within(0.001).of(0.320)
         scores[document_both_terms].should be_within(0.001).of(1.0)
       end
     end
@@ -122,9 +128,19 @@ describe RetrievalLite::TfIdfRetrieval do
     end
     it "should have the correct scores" do
       scores = RetrievalLite::TfIdfRetrieval.evaluate_with_scores(corpus_different, "lorem dolor sit")
-      scores[document].should be_within(0.001).of(0.816)
-      scores[document_with_duplicates].should be_within(0.001).of(0.808)
+      scores[document].should be_within(0.001).of(1.0)
+      scores[document_with_duplicates].should be_within(0.001).of(0.953)
       scores[document_one_term].should be_within(0.001).of(0.0)
+    end
+  end
+
+  describe "documents with same frequency but longer lengths" do
+    it "order should favor shorter documents" do
+      RetrievalLite::TfIdfRetrieval.evaluate(corpus_small, "lorem").should == [document_one_term, document]
+    end
+    it "shorter documents should rank higher" do
+      scores = RetrievalLite::TfIdfRetrieval.evaluate_with_scores(corpus_small, "lorem")
+      scores[document_one_term].should > scores[document]
     end
   end
 end

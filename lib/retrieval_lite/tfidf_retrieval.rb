@@ -37,11 +37,16 @@ module RetrievalLite::TfIdfRetrieval
 
     scores = {}
     documents.each do |document|
-      document_vector = Array.new(terms.size)
-      terms.each_with_index do |term, index|
-        document_vector[index] = tfidf_weight(corpus, document, term)
+      vector_length = tfidf_weight_length(corpus, document)
+      if vector_length == 0
+        scores[document] = 0
+      else
+        document_vector = Array.new(terms.size)
+        terms.each_with_index do |term, index|
+          document_vector[index] = tfidf_weight(corpus, document, term)
+        end
+        scores[document] = RetrievalLite::Vector.dot_product(query_vector, document_vector) / vector_length
       end
-      scores[document] = RetrievalLite::Vector.cosine_similarity(query_vector, document_vector)
     end
 
     # order it by score in descending order
@@ -72,6 +77,18 @@ module RetrievalLite::TfIdfRetrieval
   # @param term [String]
   # @return [Float] the normalized tfidf weight of the term in the document
   def self.normalized_tfidf_weight(corpus, document, term)
+    tfidf_weight(corpus, document, term) / tfidf_weight_length(corpus, document)
+  end
+
+
+  # Computes the length of a document vector of tf-idf weights.  This is
+  # used for normalization
+  # 
+  # @param corpus [Corpus] 
+  # @param document [Document] 
+  # @param term [String]
+  # @return [Float] the length of the document vector of tf-idf weights
+  def self.tfidf_weight_length(corpus, document)
     normalize = 0
 
     document.terms.each do |t|
@@ -79,6 +96,6 @@ module RetrievalLite::TfIdfRetrieval
       normalize += weight * weight
     end
 
-    tfidf_weight(corpus, document, term) / Math.sqrt(normalize)
+    return Math.sqrt(normalize)
   end
 end
