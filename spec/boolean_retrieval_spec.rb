@@ -33,6 +33,18 @@ describe RetrievalLite::BooleanRetrieval do
   let (:corpus) do
     RetrievalLite::Corpus.new(all_documents)
   end
+
+  describe "is boolean expression" do
+    it "should accept any uses of AND OR NOT" do
+      RetrievalLite::BooleanRetrieval.is_boolean_expression("foo AND bar").should == true
+      RetrievalLite::BooleanRetrieval.is_boolean_expression("foo OR bar").should == true
+      RetrievalLite::BooleanRetrieval.is_boolean_expression("foo NOT bar").should == true
+    end
+    it "should reject any regular non-boolean queries" do
+      RetrievalLite::BooleanRetrieval.is_boolean_expression("foo bar").should == false
+    end
+  end
+
   describe "one-term retrieval" do
     it "should return array of all documents with that term" do
       RetrievalLite::BooleanRetrieval.evaluate(corpus, "lorem") == [document, document_replicated, document_with_duplicates]
