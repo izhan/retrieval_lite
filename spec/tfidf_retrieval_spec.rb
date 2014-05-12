@@ -30,4 +30,11 @@ describe RetrievalLite::TfIdfRetrieval do
       RetrievalLite::TfIdfRetrieval.evaluate(corpus, "LOREM") == all_documents
     end
   end
+  describe "unnormalized dot product" do
+    it "should order documents correctly" do
+      #TODO
+    end
+    it "should have the correct scores" do
+    end
+  end
 end

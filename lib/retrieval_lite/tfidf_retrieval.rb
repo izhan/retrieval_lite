@@ -1,3 +1,4 @@
+# @see http://nlp.stanford.edu/IR-book/pdf/irbookonlinereading.pdf
 module RetrievalLite::TfIdfRetrieval
   # Queries a corpus using the tf-idf ranking algorithm and cosine similarity.
   # Returns documents ordered by tf-idf score.
@@ -7,7 +8,24 @@ module RetrievalLite::TfIdfRetrieval
   # @return [Array<Document>] ordered array of documents that satisfy the query
   def self.evaluate(corpus, query)
     token_array = RetrievalLite::Tokenizer.parse_content(query)
+    query_vector = RetrievalLite::Document.new(token_array)
+    num_of_terms = query_vector.size
 
+    documents = Set.new
+    # gathering only the documents that contain at least one of those terms
+    token_array.each do |t|
+      docs_with_term = documents_with(t)
+      docs_with_term.each do |d|
+        if !documents.include?(d)
+          documents << d
+        end
+      end
+    end
+
+    scores = {}
+    documents.each do
+
+    end
     corpus.documents_with(token_array.first)
   end
 
@@ -37,7 +55,6 @@ module RetrievalLite::TfIdfRetrieval
 
   # Ranks a document in corpus using the normalized tf-idf scoring.
   # @see #tfidf_weight
-  # @note tf-idf is slightly modified.  n_j (# of docs containing term j) is replaced with n_j + 1 to avoid divide by zero
   # 
   # @param corpus [Corpus] 
   # @param document [Document] 
