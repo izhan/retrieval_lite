@@ -72,13 +72,13 @@ module RetrievalLite::TfIdfRetrieval
   # @param term [String]
   # @return [Float] the normalized tfidf weight of the term in the document
   def self.normalized_tfidf_weight(corpus, document, term)
-    length_of_vector = 0
+    normalize = 0
 
-    corpus.documents_with(term).each do |d|
-      weight = tfidf_weight(corpus, d, term)
-      length_of_vector += weight * weight
+    document.terms.each do |t|
+      weight = tfidf_weight(corpus, document, t)
+      normalize += weight * weight
     end
 
-    tfidf_weight(corpus, document, term) / Math.sqrt(length_of_vector)
+    tfidf_weight(corpus, document, term) / Math.sqrt(normalize)
   end
 end
