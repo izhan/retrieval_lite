@@ -26,6 +26,19 @@ describe RetrievalLite::TfIdfRetrieval do
   let (:corpus) do
     RetrievalLite::Corpus.new(all_documents)
   end
+
+  describe "calculating tf-idf scores" do
+    describe "for when all documents of corpus has a term" do
+      it "should have score of zero for each document" do
+        scores = RetrievalLite::TfIdfRetrieval.evaluate_with_scores(corpus, "lorem")
+        scores.size.should == all_documents.size
+        scores.values.each do |v|
+          v.should == 0
+        end
+      end
+    end
+  end
+
   describe "one-term retrieval" do
     it "should return array with that term" do
       RetrievalLite::TfIdfRetrieval.evaluate(corpus, "lorem").should == all_documents
@@ -34,6 +47,13 @@ describe RetrievalLite::TfIdfRetrieval do
       RetrievalLite::TfIdfRetrieval.evaluate(corpus, "LOREM").should == all_documents
     end
   end
+
+  describe "when corpus has only one document containing term" do
+    it "should return array with only that document" do
+      RetrievalLite::TfIdfRetrieval.evaluate(corpus, "unique").should == [document_with_unique]
+    end
+  end
+
   describe "for no matches" do
     it "should return empty array for term not in any documents" do
       RetrievalLite::TfIdfRetrieval.evaluate(corpus, "foobar").should == []
@@ -42,6 +62,7 @@ describe RetrievalLite::TfIdfRetrieval do
       RetrievalLite::TfIdfRetrieval.evaluate(corpus, "").should == []
     end
   end
+
   describe "unnormalized dot product" do
     it "should order documents correctly" do
 

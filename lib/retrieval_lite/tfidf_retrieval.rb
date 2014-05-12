@@ -43,7 +43,6 @@ module RetrievalLite::TfIdfRetrieval
       end
       scores[document] = RetrievalLite::Vector.cosine_similarity(query_vector, document_vector)
     end
-
     return scores
   end
 
@@ -54,8 +53,13 @@ module RetrievalLite::TfIdfRetrieval
   # @param corpus [Corpus] 
   # @param document [Document] 
   # @param term [String]
+  # @return [Float] the tfidf weight of the term in the document
   def self.tfidf_weight(corpus, document, term)
-    document.frequency_of(term) * Math.log(corpus.size/(corpus.document_frequency(term)))
+    if corpus.document_frequency(term) == 0
+      return 0
+    else
+      return document.frequency_of(term) * Math.log(corpus.size/(corpus.document_frequency(term)))
+    end
   end
 
   # Ranks a document in corpus using the normalized tf-idf scoring.
@@ -64,6 +68,7 @@ module RetrievalLite::TfIdfRetrieval
   # @param corpus [Corpus] 
   # @param document [Document] 
   # @param term [String]
+  # @return [Float] the normalized tfidf weight of the term in the document
   def self.normalized_tfidf_weight(corpus, document, term)
     length_of_vector = 0
 

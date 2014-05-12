@@ -3,7 +3,12 @@ module RetrievalLite::Vector
   # @param scores2 [Array<Integer>] each term and its corresponding score in the second document
   # @return [Float] the cosine similarity of the two vectors representing the score of the documents
   def self.cosine_similarity(scores1, scores2)
-    dot_product(scores1, scores2) / (euclidean_length(scores1) * euclidean_length(scores2))
+    length = (euclidean_length(scores1) * euclidean_length(scores2))
+    if length == 0
+      return 0
+    else
+      dot_product(scores1, scores2) / (euclidean_length(scores1) * euclidean_length(scores2))
+    end
   end
 
   # @param scores1 [Array<Integer>] each term and its corresponding score in the first document
