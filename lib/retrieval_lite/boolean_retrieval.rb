@@ -9,9 +9,14 @@ module RetrievalLite::BooleanRetrieval
   # @return [Array<Document>] unordered array of documents that satisfy the query
   def self.evaluate(corpus, query)
     if !is_valid_expression?(query)
-      raise "Boolean expression can only consist of boolean operators and alphanumeric characters."
+      raise "Each boolean operator (AND, OR, NOT) must operate on two terms."
     end
 
+    # must strip all non alphanumeric characters
+    query = strip_query(query)
+
+    # replace all terms with 
+    query.gsub(/\s+[a-zA-Z0-9]\s+/)
     corpus.documents_with(query)
   end
 
@@ -21,10 +26,16 @@ module RetrievalLite::BooleanRetrieval
     /AND|OR|NOT/ === query
   end
 
-
+  # @note all other invalid expressions should be caught later on
   # @param query [String] the boolean query to be evaluated
-  # @return [Boolean] whether query contains any non-alphanumeric characters besides parenthesis and whitespace
+  # @return [Boolean] whether query ends parenthesis correctly
   def self.is_valid_expression?(query)
     !(/(AND|OR|NOT)\s*\)/ === query)
+  end
+
+  # @param query [String] the boolean query to be evaluated
+  # @return [String] a query removed of any non-alphanumeric characters besides parenthesis and whitespace
+  def self.strip_query(query)
+    query.gsub(/[^a-zA-Z0-9\s\(\)\-]/, " ").gsub(/\-\-+/, " ")
   end
 end

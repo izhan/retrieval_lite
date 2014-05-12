@@ -62,7 +62,20 @@ describe RetrievalLite::BooleanRetrieval do
     end
   end
 
+  describe "#strip_query" do
+    it "should strip any commas, periods, etc nonalphanumeric characters" do
+      RetrievalLite::BooleanRetrieval.strip_query("(This is a cat.) AND (Although, something else!)").should == "(This is a cat ) AND (Although  something else )"
+    end
+    it "should strip any double, triple, etc hyphenated words" do
+      RetrievalLite::BooleanRetrieval.strip_query("This is it--hooray!").should == "This is it hooray "
+    end
+    it "should leave hyphenated words alone" do
+      RetrievalLite::BooleanRetrieval.strip_query("This is foo-bar").should == "This is foo-bar"
+    end
+  end
+
   describe "invalid boolean" do
+
   end
 
   describe "one-term retrieval" do

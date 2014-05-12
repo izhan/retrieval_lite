@@ -13,7 +13,8 @@ module RetrievalLite
   def evaluate_query(corpus, query, opts = {})
     evaluator_options = {}
 
-    if opts[no_bool]
+    # evaluate like normal if it is not a boolean expression
+    if opts[no_bool] || RetrievalLite::TfIdfRetrieval.has_boolean_operators?(query)
       RetrievalLite::TfIdfRetrieval.evaluate(corpus, query)
     else
       RetrievalLite::TfIdfRetrieval.evaluate(corpus, query)
