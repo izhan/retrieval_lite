@@ -37,8 +37,8 @@ class RetrievalLite::Document
   # @param term [String]
   # @return [Integer] the number of times a term appears in the document
   def frequency_of(term)
-    if @term_occurrences.has_key?(term)
-      return @term_occurrences[term]
+    if @term_frequencies.has_key?(term)
+      return @term_frequencies[term]
     else
       return 0
     end

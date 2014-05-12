@@ -18,15 +18,14 @@ module RetrievalLite::TfIdfRetrieval
   # @param query [String] the boolean query to be evaluated
   # @return [Hash<Document, Integer>] ordered array of documents that satisfy the query
   def self.evaluate_with_scores(corpus, query)
-    token_array = RetrievalLite::Tokenizer.parse_content(query)
-    query_document = RetrievalLite::Document.new(token_array)
+    query_document = RetrievalLite::Document.new(query)
     terms = query_document.term_frequencies.keys
-    query_vector = query_document.term_frequencies.to_a # should be in same order as keys
+    query_vector = query_document.term_frequencies.values # should be in same order as keys
 
     documents = Set.new # ordering of documents doesn't matter right now
     # gathering only the documents that contain at least one of those terms
-    token_array.each do |t|
-      docs_with_term = documents_with(t)
+    terms.each do |t|
+      docs_with_term = corpus.documents_with(t)
       docs_with_term.each do |d|
         if !documents.include?(d)
           documents << d
@@ -40,7 +39,7 @@ module RetrievalLite::TfIdfRetrieval
       terms.each_with_index do |term, index|
         document_vector[index] = tfidf_weight(corpus, document, term)
       end
-      scores[d] = RetrievalLite::Vector.cosine_similarity(query_vector, document_vector)
+      scores[document] = RetrievalLite::Vector.cosine_similarity(query_vector, document_vector)
     end
 
     return scores
