@@ -26,9 +26,11 @@ module RetrievalLite::TfIdfRetrieval
     # gathering only the documents that contain at least one of those terms
     terms.each do |t|
       docs_with_term = corpus.documents_with(t)
-      docs_with_term.each do |d|
-        if !documents.include?(d)
-          documents << d
+      if docs_with_term
+        docs_with_term.each do |d|
+          if !documents.include?(d)
+            documents << d
+          end
         end
       end
     end
