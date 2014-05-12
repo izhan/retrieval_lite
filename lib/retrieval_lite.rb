@@ -1,4 +1,5 @@
 require "version"
+require "set"
 
 module RetrievalLite
   

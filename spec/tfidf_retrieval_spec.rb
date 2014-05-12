@@ -55,10 +55,10 @@ describe RetrievalLite::TfIdfRetrieval do
   describe "calculating normalized tf-idf scores" do
     describe "term that a few documents have" do
       it "should have correct tf-idf" do
-        RetrievalLite::TfIdfRetrieval.normalized_tfidf_weight(corpus, document, "ipsum").should be_within(0.001).of(0.316)
-        RetrievalLite::TfIdfRetrieval.normalized_tfidf_weight(corpus, document_with_duplicates, "ipsum").should be_within(0.001).of(0.632)
-        RetrievalLite::TfIdfRetrieval.normalized_tfidf_weight(corpus, document_doubled, "ipsum").should be_within(0.001).of(0.632)
-        RetrievalLite::TfIdfRetrieval.normalized_tfidf_weight(corpus, document_both_terms, "ipsum").should be_within(0.001).of(0.316)
+        RetrievalLite::TfIdfRetrieval.normalized_tfidf_weight(corpus, document, "ipsum").should be_within(0.001).of(0.320)
+        RetrievalLite::TfIdfRetrieval.normalized_tfidf_weight(corpus, document_with_duplicates, "ipsum").should be_within(0.001).of(0.163)
+        RetrievalLite::TfIdfRetrieval.normalized_tfidf_weight(corpus, document_doubled, "ipsum").should be_within(0.001).of(0.320)
+        RetrievalLite::TfIdfRetrieval.normalized_tfidf_weight(corpus, document_both_terms, "ipsum").should be_within(0.001).of(1.0)
       end
     end
   end
