@@ -58,7 +58,7 @@ module RetrievalLite::TfIdfRetrieval
     if corpus.document_frequency(term) == 0
       return 0
     else
-      return document.frequency_of(term) * Math.log(corpus.size/(corpus.document_frequency(term)))
+      return document.frequency_of(term) * Math.log(1.0 * corpus.size/(corpus.document_frequency(term)))
     end
   end
 
