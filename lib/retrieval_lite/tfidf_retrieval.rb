@@ -43,7 +43,9 @@ module RetrievalLite::TfIdfRetrieval
       end
       scores[document] = RetrievalLite::Vector.cosine_similarity(query_vector, document_vector)
     end
-    return scores
+
+    # order it by score in descending order
+    return Hash[scores.sort_by{|key, value| value}.reverse]
   end
 
   # Ranks a document in corpus using the tf-idf scoring.
@@ -72,7 +74,7 @@ module RetrievalLite::TfIdfRetrieval
   def self.normalized_tfidf_weight(corpus, document, term)
     length_of_vector = 0
 
-    documents_with(term).each do |d|
+    corpus.documents_with(term).each do |d|
       weight = tfidf_weight(corpus, d, term)
       length_of_vector += weight * weight
     end

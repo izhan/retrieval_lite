@@ -7,7 +7,7 @@ module RetrievalLite::Vector
     if length == 0
       return 0
     else
-      dot_product(scores1, scores2) / (euclidean_length(scores1) * euclidean_length(scores2))
+      dot_product(scores1, scores2) / length
     end
   end
 

@@ -26,14 +26,39 @@ describe RetrievalLite::TfIdfRetrieval do
   let (:corpus) do
     RetrievalLite::Corpus.new(all_documents)
   end
+  let (:corpus_different) do
+    RetrievalLite::Corpus.new([document_one_term, document, document_with_duplicates])
+  end
 
   describe "calculating tf-idf scores" do
+    describe "term that all documents have" do
+      it "should have correct tf-idf" do
+        RetrievalLite::TfIdfRetrieval.tfidf_weight(corpus, document_one_term, "lorem").should be_within(0.001).of(0)
+        RetrievalLite::TfIdfRetrieval.tfidf_weight(corpus, document, "lorem").should be_within(0.001).of(0)
+        RetrievalLite::TfIdfRetrieval.tfidf_weight(corpus, document_with_duplicates, "lorem").should be_within(0.001).of(0)
+        RetrievalLite::TfIdfRetrieval.tfidf_weight(corpus, document_doubled, "lorem").should be_within(0.001).of(0)
+        RetrievalLite::TfIdfRetrieval.tfidf_weight(corpus, document_both_terms, "lorem").should be_within(0.001).of(0)
+        RetrievalLite::TfIdfRetrieval.tfidf_weight(corpus, document_with_unique, "lorem").should be_within(0.001).of(0)
+      end
+    end
+
     describe "term that a few documents have" do
       it "should have correct tf-idf" do
         RetrievalLite::TfIdfRetrieval.tfidf_weight(corpus, document, "ipsum").should be_within(0.001).of(0.405)
         RetrievalLite::TfIdfRetrieval.tfidf_weight(corpus, document_with_duplicates, "ipsum").should be_within(0.001).of(0.811)
         RetrievalLite::TfIdfRetrieval.tfidf_weight(corpus, document_doubled, "ipsum").should be_within(0.001).of(0.811)
         RetrievalLite::TfIdfRetrieval.tfidf_weight(corpus, document_both_terms, "ipsum").should be_within(0.001).of(0.405)
+      end
+    end
+  end
+
+  describe "calculating normalized tf-idf scores" do
+    describe "term that a few documents have" do
+      it "should have correct tf-idf" do
+        RetrievalLite::TfIdfRetrieval.normalized_tfidf_weight(corpus, document, "ipsum").should be_within(0.001).of(0.316)
+        RetrievalLite::TfIdfRetrieval.normalized_tfidf_weight(corpus, document_with_duplicates, "ipsum").should be_within(0.001).of(0.632)
+        RetrievalLite::TfIdfRetrieval.normalized_tfidf_weight(corpus, document_doubled, "ipsum").should be_within(0.001).of(0.632)
+        RetrievalLite::TfIdfRetrieval.normalized_tfidf_weight(corpus, document_both_terms, "ipsum").should be_within(0.001).of(0.316)
       end
     end
   end
@@ -69,10 +94,10 @@ describe RetrievalLite::TfIdfRetrieval do
 
   describe "one-term retrieval" do
     it "should return array with that term" do
-      RetrievalLite::TfIdfRetrieval.evaluate(corpus, "lorem").should == all_documents
+      RetrievalLite::TfIdfRetrieval.evaluate(corpus, "lorem").should =~ all_documents
     end
     it "should ignore case" do
-      RetrievalLite::TfIdfRetrieval.evaluate(corpus, "LOREM").should == all_documents
+      RetrievalLite::TfIdfRetrieval.evaluate(corpus, "LOREM").should =~ all_documents
     end
   end
 
@@ -91,13 +116,15 @@ describe RetrievalLite::TfIdfRetrieval do
     end
   end
 
-  describe "unnormalized dot product" do
+  describe "multiple-term retrieval" do
     it "should order documents correctly" do
-
-      #TODO
+      RetrievalLite::TfIdfRetrieval.evaluate(corpus_different, "lorem dolor sit").should == [document, document_with_duplicates, document_one_term]
     end
     it "should have the correct scores" do
-
+      scores = RetrievalLite::TfIdfRetrieval.evaluate_with_scores(corpus_different, "lorem dolor sit")
+      scores[document].should be_within(0.001).of(0.816)
+      scores[document_with_duplicates].should be_within(0.001).of(0.808)
+      scores[document_one_term].should be_within(0.001).of(0.0)
     end
   end
 end
