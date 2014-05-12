@@ -6,8 +6,8 @@ module RetrievalLite::TfIdfRetrieval
   # @param corpus [Corpus] the collection of documents
   # @param query [String] the boolean query to be evaluated
   # @return [Array<Document>] ordered array of documents that satisfy the query
-  def self.evaluate(corpus, query)
-    evaluate_with_scores(corpus, query).keys
+  def self.evaluate(corpus, query, opts = {})
+    evaluate_with_scores(corpus, query, opts).keys
   end
 
   # Queries a corpus using the tf-idf ranking algorithm and cosine similarity.
@@ -16,20 +16,25 @@ module RetrievalLite::TfIdfRetrieval
   # 
   # @param corpus [Corpus] the collection of documents
   # @param query [String] the boolean query to be evaluated
+  # @option opts [Array<Document>] :document_set limiting the documents to search in the corpus to only these documents
   # @return [Hash<Document, Integer>] ordered array of documents that satisfy the query
-  def self.evaluate_with_scores(corpus, query)
+  def self.evaluate_with_scores(corpus, query, opts = {})
     query_document = RetrievalLite::Document.new(query)
     terms = query_document.term_frequencies.keys
     query_vector = query_document.term_frequencies.values # should be in same order as keys
 
-    documents = Set.new # ordering of documents doesn't matter right now
-    # gathering only the documents that contain at least one of those terms
-    terms.each do |t|
-      docs_with_term = corpus.documents_with(t)
-      if docs_with_term
-        docs_with_term.each do |d|
-          if !documents.include?(d)
-            documents << d
+    if opts[:document_set]
+      documents = opts[:document_set]
+    else
+      documents = Set.new # ordering of documents doesn't matter right now
+      # gathering only the documents that contain at least one of those terms
+      terms.each do |t|
+        docs_with_term = corpus.documents_with(t)
+        if docs_with_term
+          docs_with_term.each do |d|
+            if !documents.include?(d)
+              documents << d
+            end
           end
         end
       end
