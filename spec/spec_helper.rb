@@ -1,3 +1,6 @@
+require 'simplecov'
+SimpleCov.start
+
 require "retrieval_lite"
 require "spec_helpers/file_helpers"
 

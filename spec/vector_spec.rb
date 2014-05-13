@@ -24,4 +24,16 @@ describe RetrievalLite::Vector do
       RetrievalLite::Vector.euclidean_length([3, 4]).should == 5
     end
   end
+
+  describe "cosine similarity" do
+    it "should compute correctly for vectors length 1" do
+      RetrievalLite::Vector.cosine_similarity([3], [5]).should == 1
+    end
+    it "should compute correctly for longer vectors" do
+      RetrievalLite::Vector.cosine_similarity([2, 3], [4, 5]).should be_within(0.001).of(0.996)
+    end
+    it "should raise error for unequal sized arrays" do
+      expect { RetrievalLite::Vector.cosine_similarity([2, 3], [4]) }.to raise_error
+    end
+  end
 end

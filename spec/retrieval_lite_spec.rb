@@ -4,37 +4,37 @@ describe RetrievalLite do
   include RetrievalLite
 
   let (:document_one_term) do
-    RetrievalLite::Document.new("lorem")
+    new_document("lorem")
   end
   let (:document) do
-    RetrievalLite::Document.new("lorem ipsum dolor sit amet")
+    new_document("lorem ipsum dolor sit amet")
   end
   let (:document_with_duplicates) do
-    RetrievalLite::Document.new("lorem ipsum ipsum dolor dolor dolor sit sit sit sit amet amet amet amet amet")
+    new_document("lorem ipsum ipsum dolor dolor dolor sit sit sit sit amet amet amet amet amet")
   end
   let (:document_doubled) do
-    RetrievalLite::Document.new("lorem ipsum dolor sit amet lorem ipsum dolor sit amet")
+    new_document("lorem ipsum dolor sit amet lorem ipsum dolor sit amet")
   end
   let (:document_both_terms) do
-    RetrievalLite::Document.new("lorem ipsum")
+    new_document("lorem ipsum")
   end
   let (:document_with_unique) do
-    RetrievalLite::Document.new("lorem unique")
+    new_document("lorem unique")
   end
   let (:document_no_match) do
-    RetrievalLite::Document.new("no-match")
+    new_document("no-match")
   end
   let (:all_documents) do
     [document, document_with_duplicates, document_doubled, document_one_term, document_both_terms, document_with_unique, document_no_match]
   end
   let (:corpus) do
-    RetrievalLite::Corpus.new(all_documents)
+    new_corpus(all_documents)
   end
   let (:corpus_different) do
-    RetrievalLite::Corpus.new([document_one_term, document, document_with_duplicates])
+    new_corpus([document_one_term, document, document_with_duplicates])
   end
   let(:corpus_small) do
-    RetrievalLite::Corpus.new([document_one_term, document, document_no_match])
+    new_corpus([document_one_term, document, document_no_match])
   end
 
   describe "when no options are passed" do
@@ -54,6 +54,15 @@ describe RetrievalLite do
       evaluate_query(corpus, "(lorem AND unique) OR no-match").should == [document_with_unique, document_no_match]
       evaluate_query(corpus, "lorem AND ipsum AND dolor AND sit AND amet").should == [document_doubled, document, document_with_duplicates]
       evaluate_query(corpus, "lorem AND no-match").should == []
+    end
+  end
+
+  describe "with punctuation" do
+    it "should retrieve it as normal" do
+      evaluate_query(corpus, "lorem. AND NOT dolor!").should == [document_one_term, document_both_terms, document_with_unique]
+      evaluate_query(corpus, "(lorem-- AND !unique) OR no-match").should == [document_with_unique, document_no_match]
+      evaluate_query(corpus, "@lorem AND @ipsum AND @dolor AND @sit AND @amet").should == [document_doubled, document, document_with_duplicates]
+      evaluate_query(corpus, "||lorem AND no-match").should == []
     end
   end
 end

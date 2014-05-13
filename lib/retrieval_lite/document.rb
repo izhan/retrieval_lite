@@ -18,13 +18,6 @@ class RetrievalLite::Document
     @term_frequencies = RetrievalLite::Tokenizer.parse_content(content)
   end
 
-  # for debugging
-  def print_tokens
-    @term_frequencies.each do |key, value|
-      puts "#{key}: #{value}"
-    end
-  end
-
   # @return [Integer] the total number of unique terms in the document
   def term_count
     @term_frequencies.size

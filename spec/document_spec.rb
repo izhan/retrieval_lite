@@ -80,6 +80,12 @@ describe RetrievalLite::Document do
       end
     end
 
+    describe "total terms" do
+      it "should have the right number of terms" do
+        document.total_terms.should == 5
+      end
+    end
+
     describe "for blank document" do
       it "should not raise error on initialization" do
         expect { RetrievalLite::Document.new("") }.to_not raise_error
