@@ -4,6 +4,10 @@ class RetrievalLite::Corpus
   # hash of a term to the array of documents that contain the particular term
   attr_reader :term_occurrences
 
+  # Creates a new Retrieval Lite corpus, a collection of documents.  Corpuses
+  # do not modify nor own the documents in them, meaning documents must
+  # be created first before adding them to the corpus.
+  #
   # @param documents [Array<Document>] the documents of the corpus
   # @param opts [Hash] optional arguments to initializer
   # @option opts [Array<String>] :stop_words the words to ignore when creating tokens

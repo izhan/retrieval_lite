@@ -34,6 +34,29 @@ module RetrievalLite
       RetrievalLite::TfIdfRetrieval.evaluate_with_scores(corpus, query, { document_set: documents })
     end
   end
+
+  # Creates a new Retrieval Lite document.  Upon initialization, the content
+  # is parsed into individual tokens, and its term frequencies are recorded.
+  #
+  # @param content [String] the text of the document
+  # @param opts [Hash] optional arguments to initializer
+  # @option opts [String] :id the id of the document.  Defaults to object_id assigned by ruby
+  # @return a new document containing the input text
+  def new_document(content, opts = {})
+    RetrievalLite::Document.new(content, opts)
+  end
+
+  # Creates a new Retrieval Lite corpus, a collection of documents.  Corpuses
+  # do not modify nor own the documents in them, meaning documents must
+  # be created first before adding them to the corpus.
+  #
+  # @param documents [Array<Document>] the documents of the corpus
+  # @param opts [Hash] optional arguments to initializer
+  # @option opts [Array<String>] :stop_words the words to ignore when creating tokens
+  # @return [Corpus] either a new empty corpus or one with those documents
+  def new_corpus(documents = [], opts = {})
+    RetrievalLite::Corpus.new(documents, opts)
+  end
 end
 
 require 'retrieval_lite/document'

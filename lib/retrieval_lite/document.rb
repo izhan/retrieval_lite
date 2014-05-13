@@ -6,7 +6,8 @@ class RetrievalLite::Document
   # the id of the document
   attr_reader :id
 
-  # splits the text of the document into an array of tokens
+  # Creates a new Retrieval Lite document.  Upon initialization, the content
+  # is parsed into individual tokens, and its term frequencies are recorded.
   #
   # @param content [String] the text of the document
   # @param opts [Hash] optional arguments to initializer
