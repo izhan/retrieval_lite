@@ -88,5 +88,15 @@ describe RetrievalLite::BooleanRetrieval do
     it "should work for simple two term AND" do
       RetrievalLite::BooleanRetrieval.evaluate(corpus, "lorem AND ipsum").should == [document, document_replicated, document_with_duplicates]
     end
+    it "should work for simple two term OR" do
+      RetrievalLite::BooleanRetrieval.evaluate(corpus, "lorem OR foo").should == all_documents
+    end
+    it "should work for simple one term NOT" do
+      RetrievalLite::BooleanRetrieval.evaluate(corpus, "NOT lorem").should == [document_strange]
+    end
+    it "should work for more complex retrievals with parenthesis" do
+      RetrievalLite::BooleanRetrieval.evaluate(corpus, "foo OR (dolor AND sit)").should == [document, document_replicated, document_with_duplicates, document_strange]
+      RetrievalLite::BooleanRetrieval.evaluate(corpus, "(lorem OR foo) AND NOT ipsum").should == [document_one_term, document_strange]
+    end
   end
 end
