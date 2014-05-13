@@ -1,3 +1,4 @@
+# Gathers documents that satisfy boolean expression
 module RetrievalLite::BooleanRetrieval
   # Gathers up all documents of a corpus that satisfy a boolean expression 
   # with the standard operators: AND, OR, NOT.  Does not order the documents in 

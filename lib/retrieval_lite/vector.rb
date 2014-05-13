@@ -1,3 +1,4 @@
+# Offers mathematical operations for vectors
 module RetrievalLite::Vector
   # @param scores1 [Array<Integer>] each term and its corresponding score in the first document
   # @param scores2 [Array<Integer>] each term and its corresponding score in the second document

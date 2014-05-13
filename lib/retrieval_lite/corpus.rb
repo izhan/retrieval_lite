@@ -1,3 +1,4 @@
+# A collection of documents
 class RetrievalLite::Corpus
   # the documents within the corpus
   attr_reader :documents

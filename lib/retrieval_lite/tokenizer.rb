@@ -1,4 +1,6 @@
+# Separates text into tokens used for IR
 module RetrievalLite::Tokenizer
+  # Punctuation that is to be ignored when parsing.  Does not contain the hyphen
   SPECIAL_SEPARATERS = ['[', ']', '\\', ';', '\'', ',', '.', '/', '!', '@', '#', '%', '&', '*', '(', ')', '_', '{', '}', ':', '"', '?', '=', '`', '~', '$', '^', '+', '|', '<', '>']
 
   # @param content [String] the text of the document

@@ -1,6 +1,7 @@
 require "version"
 require "set"
 
+# Offers simple document retrieval from a corpus with a query
 module RetrievalLite
   # Queries a corpus first by filtering it using a boolean evaluator and then
   # using the tf-idf ranking algorithm and cosine similarity.

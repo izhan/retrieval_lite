@@ -1,3 +1,4 @@
+# Scores queries using TF-IDF 
 # @see http://nlp.stanford.edu/IR-book/pdf/irbookonlinereading.pdf
 module RetrievalLite::TfIdfRetrieval
   # Queries a corpus using the tf-idf ranking algorithm and cosine similarity.
@@ -91,7 +92,6 @@ module RetrievalLite::TfIdfRetrieval
   # 
   # @param corpus [Corpus] 
   # @param document [Document] 
-  # @param term [String]
   # @return [Float] the length of the document vector of tf-idf weights
   def self.tfidf_weight_length(corpus, document)
     normalize = 0

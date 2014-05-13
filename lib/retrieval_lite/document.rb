@@ -1,3 +1,4 @@
+# Representation of document using content as a string and term frequencies as a hash
 class RetrievalLite::Document
   # the text of the document
   attr_reader :content
