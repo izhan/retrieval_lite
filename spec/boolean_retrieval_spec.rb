@@ -72,6 +72,9 @@ describe RetrievalLite::BooleanRetrieval do
     it "should leave hyphenated words alone" do
       RetrievalLite::BooleanRetrieval.strip_query("This is foo-bar").should == "This is foo-bar"
     end
+    it "should remove lone hyphens" do
+      RetrievalLite::BooleanRetrieval.strip_query("This - is foo-bar").should == "This is foo-bar"
+    end
   end
 
   describe "invalid boolean" do
@@ -85,5 +88,8 @@ describe RetrievalLite::BooleanRetrieval do
     it "should ignore case" do
       RetrievalLite::BooleanRetrieval.evaluate(corpus, "LOREM") == [document, document_replicated, document_with_duplicates]
     end
+  end
+
+  describe "boolean retrieval" do
   end
 end

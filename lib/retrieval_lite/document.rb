@@ -44,6 +44,12 @@ class RetrievalLite::Document
     end
   end
 
+  # @param term [String]
+  # @return [Boolean] whether a term appears in the document
+  def contains?(term)
+    @term_frequencies.has_key?(term)
+  end
+
   # @return [Integer] the total number of terms (not unique) in the document
   def total_terms
     count = 0
