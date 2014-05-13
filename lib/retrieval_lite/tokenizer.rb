@@ -24,7 +24,7 @@ module RetrievalLite::Tokenizer
       end
     end
 
-    tokens
+    return tokens
   end
 
   private

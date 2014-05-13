@@ -15,13 +15,29 @@ module RetrievalLite::BooleanRetrieval
     # must strip all non alphanumeric characters
     query = strip_query(query)
 
-    # replace all terms with corresponding functions
-    query = query.gsub(/[[^(AND|NOT|OR)]&&[a-zA-Z0-9]]+/, " document.contains?(\"" + '\0' + "\") ")
+    # must have spaces in front and back for next line
+    query = " " + query + " " 
 
     # replace all operators with corresponding operators
     query = query.gsub("AND", "\&\&").gsub("OR", "\|\|").gsub("NOT", "!")
 
-    corpus.documents_with(query)
+    # replace all terms with corresponding functions
+    query.gsub!(/[a-zA-Z0-9]+/) do |q|
+       " document.contains?(\"" + q.downcase + "\") "
+    end
+
+    output_documents = []
+    corpus.documents.each do |document|
+      # begin
+        if eval(query)
+          output_documents << document
+        end
+      # rescue
+      #   raise "The boolean expression is not valid.  Please check all parethensis and operators."
+      # end
+    end
+
+    return output_documents
   end
 
   # @param query [String] the boolean query to be evaluated
@@ -40,6 +56,10 @@ module RetrievalLite::BooleanRetrieval
   # @param query [String] the boolean query to be evaluated
   # @return [String] a query removed of any non-alphanumeric characters besides parenthesis and whitespace
   def self.strip_query(query)
-    query.gsub(/[^a-zA-Z0-9\s\(\)\-]/, " ").gsub(/\-\-+/, " ").gsub(/\s+\-\s+/, " ") # getting rid of stray hyphens
+    # remove non-alphanumeric
+    query = query.gsub(/[^a-zA-Z0-9\s\(\)\-]/, " ")
+
+    # getting rid of stray hyphens
+    query = query.gsub(/\-\-+/, " ").gsub(/\s+\-\s+/, " ")
   end
 end
