@@ -16,8 +16,14 @@ describe RetrievalLite::BooleanRetrieval do
   let (:document_strange) do
     RetrievalLite::Document.new("foo bar")
   end
-  let (:all_documents) do
+  let (:document_no_match) do
+    RetrievalLite::Document.new("no-match")
+  end
+  let (:all_normal_documents) do
     [document, document_replicated, document_with_duplicates, document_one_term, document_strange]
+  end
+  let (:all_documents) do
+    [document, document_replicated, document_with_duplicates, document_one_term, document_strange, document_no_match]
   end
   let (:corpus) do
     RetrievalLite::Corpus.new(all_documents)
@@ -82,6 +88,9 @@ describe RetrievalLite::BooleanRetrieval do
     it "should ignore case" do
       RetrievalLite::BooleanRetrieval.evaluate(corpus, "LOreM").should == [document, document_replicated, document_with_duplicates, document_one_term]
     end
+    it "should work for hyphenated words" do
+      RetrievalLite::BooleanRetrieval.evaluate(corpus, "no-match").should == [document_no_match]
+    end
   end
 
   describe "valid boolean retrieval" do
@@ -89,10 +98,10 @@ describe RetrievalLite::BooleanRetrieval do
       RetrievalLite::BooleanRetrieval.evaluate(corpus, "lorem AND ipsum").should == [document, document_replicated, document_with_duplicates]
     end
     it "should work for simple two term OR" do
-      RetrievalLite::BooleanRetrieval.evaluate(corpus, "lorem OR foo").should == all_documents
+      RetrievalLite::BooleanRetrieval.evaluate(corpus, "lorem OR foo").should == all_normal_documents
     end
     it "should work for simple one term NOT" do
-      RetrievalLite::BooleanRetrieval.evaluate(corpus, "NOT lorem").should == [document_strange]
+      RetrievalLite::BooleanRetrieval.evaluate(corpus, "NOT lorem").should == [document_strange, document_no_match]
     end
     it "should work for more complex retrievals with parenthesis" do
       RetrievalLite::BooleanRetrieval.evaluate(corpus, "foo OR (dolor AND sit)").should == [document, document_replicated, document_with_duplicates, document_strange]

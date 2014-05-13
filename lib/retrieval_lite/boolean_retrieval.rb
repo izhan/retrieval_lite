@@ -22,19 +22,19 @@ module RetrievalLite::BooleanRetrieval
     query = query.gsub("AND", "\&\&").gsub("OR", "\|\|").gsub("NOT", "!")
 
     # replace all terms with corresponding functions
-    query.gsub!(/[a-zA-Z0-9]+/) do |q|
+    query.gsub!(/[a-zA-Z0-9]+(-[a-zA-Z0-9]+)?/) do |q|
        " document.contains?(\"" + q.downcase + "\") "
     end
 
     output_documents = []
     corpus.documents.each do |document|
-      # begin
+      begin
         if eval(query)
           output_documents << document
         end
-      # rescue
-      #   raise "The boolean expression is not valid.  Please check all parethensis and operators."
-      # end
+      rescue
+        raise "The boolean expression is not valid.  Please check all parethensis and operators."
+      end
     end
 
     return output_documents
