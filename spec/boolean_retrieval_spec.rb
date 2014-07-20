@@ -76,8 +76,14 @@ describe RetrievalLite::BooleanRetrieval do
     it "should error on unclosed parenthesis" do
       expect { RetrievalLite::BooleanRetrieval.evaluate(corpus, "(lorem AND ipsum") }.to raise_error
     end
+    it "should error for extra closing parenthesis" do
+      expect { RetrievalLite::BooleanRetrieval.evaluate(corpus, "lorem AND ) ipsum") }.to raise_error
+    end
     it "should error on when not enough arguments are provided" do
       expect { RetrievalLite::BooleanRetrieval.evaluate(corpus, "lorem AND ipsum OR") }.to raise_error
+    end
+    it "should error on invalid punctuation" do
+      expect { RetrievalLite::BooleanRetrieval.evaluate(corpus, "lor,.,.em AND ipsum") }.to raise_error
     end
   end
 

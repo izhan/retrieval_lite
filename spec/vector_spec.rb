@@ -26,6 +26,9 @@ describe RetrievalLite::Vector do
   end
 
   describe "cosine similarity" do
+    it "should return zero for zero vectors" do
+      RetrievalLite::Vector.cosine_similarity([0], [1]).should == 0
+    end
     it "should compute correctly for vectors length 1" do
       RetrievalLite::Vector.cosine_similarity([3], [5]).should == 1
     end

@@ -33,9 +33,6 @@ describe RetrievalLite do
   let (:corpus_different) do
     new_corpus([document_one_term, document, document_with_duplicates])
   end
-  let(:corpus_small) do
-    new_corpus([document_one_term, document, document_no_match])
-  end
 
   describe "when no options are passed" do
     it "should default to basic tf-idf" do
